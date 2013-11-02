@@ -44,9 +44,7 @@ void binary_reader::bin_read_tests::check_messages( std::ifstream &file )
 		message msg( file );
 		BOOST_CHECK_EQUAL( msg.type(), i );
 		BOOST_CHECK_EQUAL( msg.time(), i );
-		size_t sz = strlen( msg.msg());
-		for(size_t it = 0; it < sz; it++)
-			BOOST_CHECK_EQUAL( msg.msg()[it], str.at(it) );
+		BOOST_CHECK_EQUAL( msg.msg(), str.c_str() );
 	}
 	message msg( file );
 	BOOST_CHECK_EQUAL( msg.type(), 10ul );
@@ -68,8 +66,8 @@ void binary_reader::bin_read_tests::start_test()
 		std::ofstream test_file( BINARY_DIR + test_file_name, std::ios::binary );
 		BOOST_CHECK ( test_file.is_open() );
 		//generation_messages(test_file);
-		delete [] name;
 		threads.create_thread( boost::bind( &generation_messages, test_file ) );
+		delete [] name;
 	}
 	threads.join_all();
 	for( int i = 0; i < count_files; i++ )
@@ -80,8 +78,8 @@ void binary_reader::bin_read_tests::start_test()
 		std::ifstream test_file( BINARY_DIR + test_file_name, std::ios::binary );
 		BOOST_CHECK ( test_file.is_open() );
 		//check_messages(test_file);
+		threads.create_thread( boost::bind( &check_messages, test_file ) );
 		delete [] name;
-		threads.create_thread( boost::bind( &binary_reader::bin_read_tests::check_messages, test_file ) );
 	}
 	threads.join_all();
 	for( int i = 0; i < count_files; i++ )

@@ -1,6 +1,8 @@
 #include "binary_reader_tests.h"
 #include <boost/filesystem.hpp>
 
+//static boost::mutex M1;
+
 binary_reader::bin_read_tests::test_message::test_message( const uint32_t type, const uint32_t time, const char* const msg )
 {
 	type_ = type;
@@ -27,14 +29,17 @@ void binary_reader::bin_read_tests::generation_messages( std::ofstream &file )
 		str = "test_string";
 		str += c;
 		test_message msg( i, i, str.c_str() );
-		msg.write( file );
+		//boost::mutex::scoped_lock lock( M1 );
+ 		msg.write( file );
 	}
+	//boost::mutex::scoped_lock lock( M1 );
 	test_message( 10ul, 10ul, NULL ).write( file );
 	file.close();
 }
 
 void binary_reader::bin_read_tests::check_messages( std::ifstream &file )
 {
+	static boost::mutex M2;
 	std::string str;
 	char c = '1';
 	for( uint32_t i = 1; i < 10; i++, c++)
@@ -65,11 +70,12 @@ void binary_reader::bin_read_tests::start_test()
 		std::string test_file_name( name );
 		std::ofstream test_file( BINARY_DIR + test_file_name, std::ios::binary );
 		BOOST_CHECK ( test_file.is_open() );
-		//generation_messages(test_file);
-		threads.create_thread( boost::bind( &generation_messages, test_file ) );
+		//generation_messages( test_file );
+		threads.create_thread( boost::bind( &generation_messages, boost::ref( test_file ) ) );
 		delete [] name;
 	}
 	threads.join_all();
+	
 	for( int i = 0; i < count_files; i++ )
 	{
 		name = new char [16];
@@ -77,8 +83,8 @@ void binary_reader::bin_read_tests::start_test()
 		std::string test_file_name( name );
 		std::ifstream test_file( BINARY_DIR + test_file_name, std::ios::binary );
 		BOOST_CHECK ( test_file.is_open() );
-		//check_messages(test_file);
-		threads.create_thread( boost::bind( &check_messages, test_file ) );
+		//check_messages( test_file );
+		threads.create_thread( boost::bind( &check_messages, boost::ref( test_file ) ) );
 		delete [] name;
 	}
 	threads.join_all();

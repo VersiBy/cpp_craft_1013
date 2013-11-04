@@ -22,6 +22,7 @@ namespace binary_reader
 		void write( std::ofstream& );
 		uint32_t type() const;
 		uint32_t time() const;
+		uint32_t len() const;
 		const char* const msg() const;
 	};
 

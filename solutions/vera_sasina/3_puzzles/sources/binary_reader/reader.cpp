@@ -14,7 +14,7 @@ binary_reader::message::message( std::ifstream &ifile ) : msg_( NULL )
 
 void binary_reader::message::write( std::ofstream &ofile )
 {
-	ofile.write( reinterpret_cast< char* >( &type_ ), sizeof( type_ ) );;
+	ofile.write( reinterpret_cast< char* >( &type_ ), sizeof( type_ ) );
 	ofile.write( reinterpret_cast< char* >( &time_ ), sizeof( time_ ) );
 	ofile.write( reinterpret_cast< char* >( &len_ ), sizeof( len_ ) );
 	ofile.write( msg_, len_ );
@@ -32,6 +32,10 @@ uint32_t binary_reader::message::type() const
 uint32_t binary_reader::message::time() const
 {
 	return time_;
+}
+uint32_t binary_reader::message::len() const
+{
+	return len_;
 }
 const char* const binary_reader::message::msg() const
 {

@@ -36,21 +36,21 @@ void check_data( std::string &input_file_name, std::string &output_file_name )
 int main()
 {
 	char *name;
-	name = new char [16];
 	boost::thread_group threads;
-	int count_files = 3;
+	int count_files = 1000;
 
-	for( int i = 0; i < count_files; i++ )
+	for( int i = 1; i < count_files; i++ )
 	{
-		std::sprintf( name, "/input_%03d.txt", i+1 );
+		name = new char [16];
+		std::sprintf( name, "/input_%03d.txt", i );
 		std::string input_file_name( name );
 
-		std::sprintf( name, "/output_%03d.txt", i+1 );
+		std::sprintf( name, "/output_%03d.txt", i );
 		std::string output_file_name( name );
 
 		threads.create_thread( boost::bind( &check_data, input_file_name, output_file_name ) );
+		delete [] name;
 	}
-	delete [] name;
 	threads.join_all();
 	return 0;
 }

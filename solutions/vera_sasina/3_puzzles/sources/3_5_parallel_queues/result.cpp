@@ -47,7 +47,7 @@ void check_data( std::string &input_file_name, Result *res )
 
 	while(true)
 	{
-		binary_reader::message net_data( input_file );
+		binary_reader::market_message net_data( input_file );
 		if( input_file.eof() )
 			break;
 

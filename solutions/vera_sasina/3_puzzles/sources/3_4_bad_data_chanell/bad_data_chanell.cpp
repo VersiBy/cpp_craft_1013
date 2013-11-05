@@ -16,7 +16,7 @@ void check_data( std::string &input_file_name, std::string &output_file_name )
 
 	while( true )
 	{
-		binary_reader::message data( input_file );
+		binary_reader::market_message data( input_file );
 		if( input_file.eof() )
 			break;
 

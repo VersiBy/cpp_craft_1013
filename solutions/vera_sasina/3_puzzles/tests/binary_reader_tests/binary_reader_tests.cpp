@@ -46,12 +46,12 @@ void binary_reader::bin_read_tests::check_messages( std::ifstream &file )
 	{
 		str = "test_string";
 		str += c;
-		message msg( file );
+		market_message msg( file );
 		BOOST_CHECK_EQUAL( msg.type(), i );
 		BOOST_CHECK_EQUAL( msg.time(), i );
 		BOOST_CHECK_EQUAL( msg.msg(), str.c_str() );
 	}
-	message msg( file );
+	market_message msg( file );
 	BOOST_CHECK_EQUAL( msg.type(), 10ul );
 	BOOST_CHECK_EQUAL( msg.time(), 10ul );
 	BOOST_CHECK_EQUAL( msg.msg(), reinterpret_cast< char* >( NULL ) );

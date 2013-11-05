@@ -12,8 +12,8 @@ namespace binary_reader
 			test_message( const uint32_t, const uint32_t, const char* const );
 		};
 
-		void generation_messages( std::ofstream& );
-		void check_messages( std::ifstream& );
+		void generation_messages( int );
+		void check_messages( int );
 		void start_test();
 	}
 }

@@ -37,9 +37,9 @@ int main()
 {
 	char *name;
 	boost::thread_group threads;
-	int count_files = 1000;
+	int count_files = 999;
 
-	for( int i = 1; i < count_files; i++ )
+	for( int i = 1; i <= count_files; i++ )
 	{
 		name = new char [16];
 		std::sprintf( name, "/input_%03d.txt", i );

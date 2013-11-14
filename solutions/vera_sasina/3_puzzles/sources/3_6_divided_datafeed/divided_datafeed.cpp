@@ -11,8 +11,7 @@ int main()
 		binary_reader::data_message data( input_file );
 		if( input_file.eof() )
 			break;
-		const std::string stock_name = data.stock_name();
-		std::ofstream output_file( BINARY_DIR "/output_" + stock_name + ".txt", std::ios::binary | std::ios::app );
+		std::ofstream output_file( BINARY_DIR "/output_" + data.stock_name() + ".txt", std::ios::binary | std::ios::app );
 		if ( !output_file.is_open() )
 			return -1;
 		data.write( output_file );

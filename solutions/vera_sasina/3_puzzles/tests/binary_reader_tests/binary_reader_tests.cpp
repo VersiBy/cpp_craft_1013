@@ -18,13 +18,8 @@ binary_reader::bin_read_tests::test_message::test_message( const uint32_t type, 
 	}
 }
 
-void binary_reader::bin_read_tests::generation_messages( int num_file )
+void binary_reader::bin_read_tests::generation_messages( std::string test_file_name )
 {
-	char *name;
-	name = new char [16];
-	std::sprintf( name, "/test_%03d.txt", num_file+1 );
-	std::string test_file_name( name );
-	delete [] name;
 	std::ofstream test_file( BINARY_DIR + test_file_name, std::ios::binary );
 	BOOST_CHECK ( test_file.is_open() );
 	std::string str;
@@ -40,13 +35,8 @@ void binary_reader::bin_read_tests::generation_messages( int num_file )
 	test_file.close();
 }
 
-void binary_reader::bin_read_tests::check_messages( int num_file )
+void binary_reader::bin_read_tests::check_messages( std::string test_file_name )
 {
-	char *name;
-	name = new char [16];
-	std::sprintf( name, "/test_%03d.txt", num_file+1 );
-	std::string test_file_name( name );
-	delete [] name;
 	std::ifstream test_file( BINARY_DIR + test_file_name, std::ios::binary );
 	BOOST_CHECK ( test_file.is_open() );
 	std::string str;
@@ -70,23 +60,32 @@ void binary_reader::bin_read_tests::check_messages( int num_file )
 void binary_reader::bin_read_tests::start_test()
 {
 	boost::thread_group threads;
-	int count_files = 5;
-
-	for( int i = 0; i < count_files; i++ )
-	{ threads.create_thread( boost::bind( &generation_messages, i ) ); }
-	threads.join_all();
-
-	for( int i = 0; i < count_files; i++ )
-	{ threads.create_thread( boost::bind( &check_messages, i ) ); }
-	threads.join_all();
-
+	const int count_files = 5;
 	char *name;
+	name = new char [16];
+
+	for( int i = 0; i < count_files; i++ )
+	{ 
+		std::sprintf( name, "/test_%03d.txt", i+1 );
+		std::string test_file_name( name );
+		threads.create_thread( boost::bind( &generation_messages, test_file_name ) ); 
+ 	}
+	threads.join_all();
+	
+	for( int i = 0; i < count_files; i++ )
+	{ 
+		std::sprintf( name, "/test_%03d.txt", i+1 );
+		std::string test_file_name( name );
+		threads.create_thread( boost::bind( &check_messages, test_file_name ) ); 
+	}
+	threads.join_all();
+
 	for( int i = 0; i < count_files; i++ )
 	{
-		name = new char [16];
 		std::sprintf( name, "/test_%03d.txt", i+1 );
 		std::string test_file_name( name );
 		boost::filesystem::remove( BINARY_DIR + test_file_name );
-		delete [] name;
 	}
+	
+	delete [] name;
 }

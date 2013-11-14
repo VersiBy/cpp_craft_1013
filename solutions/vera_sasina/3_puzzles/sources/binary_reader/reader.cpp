@@ -18,7 +18,10 @@ void binary_reader::market_message::write( std::ofstream &ofile )
 	ofile.write( reinterpret_cast< char* >( &type_ ), sizeof( type_ ) );
 	ofile.write( reinterpret_cast< char* >( &time_ ), sizeof( time_ ) );
 	ofile.write( reinterpret_cast< char* >( &len_ ), sizeof( len_ ) );
-	ofile.write( msg_, len_ );
+	if ( len_ > 0 )
+	{
+		ofile.write( msg_, len_ );
+	}
 }
 
 binary_reader::market_message::~market_message()
